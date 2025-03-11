@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Audio Sharer",
+  "version": "1.0",
+  "description": "Captures audio from one tab and sends it to another.",
+  "permissions": ["tabs", "activeTab", "storage", "sidePanel", "tabCapture"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "all_frames": true
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  }
+}
