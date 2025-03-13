@@ -1,21 +1,77 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Capture Current Tab</title>
+    <title>Visualize Current Tab</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
     <style>
       body {
-        width: 200px;
+        width: 250px; /* Slightly wider */
+        background-color: #1e1e1e; /* Dark background */
+        color: #fff; /* White text */
+        font-family: "Roboto Mono", monospace;
         text-align: center;
+        padding: 20px;
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow */
       }
+
+      h3 {
+        color: #00c3ff; /* Neon blue heading */
+        margin-bottom: 20px;
+        font-size: 1.2em;
+      }
+
       button {
-        margin-top: 20px;
-        padding: 10px;
+        background-color: #00aaff; /* Neon blue button */
+        color: #1e1e1e; /* Dark text on button */
+        border: none;
+        padding: 15px 25px;
+        font-size: 1em;
+        font-family: "Roboto Mono", monospace;
+        border-radius: 5px; /* Rounded button corners */
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+        outline: none; /* Remove default outline */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Button shadow */
+        width: 100%; /* Full width button */
+      }
+
+      button:hover {
+        background-color: #007acc; /* Darker blue on hover */
+        transform: translateY(-2px); /* Slight lift on hover */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Increased shadow on hover */
+      }
+
+      button:active {
+        transform: translateY(0); /* Reset transform on click */
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+      }
+
+      /* Add a subtle animation to the button text */
+      button span {
+        display: inline-block; /* Needed for the animation */
+        transition: transform 0.3s ease;
+      }
+
+      button:hover span {
+        transform: translateX(
+          5px
+        ); /* Move text slightly to the right on hover */
+      }
+      #message {
+        margin-top: 15px;
+        font-size: 0.9em;
+        color: #aaa; /* Slightly muted text color */
       }
     </style>
   </head>
   <body>
-    <h3>Capture Current Tab</h3>
-    <button id="captureButton">Capture Audio</button>
+    <h3>Visualize Current Tab</h3>
+    <button id="captureButton"><span>Capture Audio</span></button>
+    <div id="message"></div>
     <script src="popup.js"></script>
   </body>
 </html>
