@@ -3,7 +3,7 @@
   "name": "Soundviz",
   "version": "1.0",
   "description": "Watch your songs like it's 2009!",
-  "permissions": ["storage", "sidePanel", "tabCapture"],
+  "permissions": ["storage", "sidePanel", "tabCapture", "activeTab"],
   "action": {
     "default_popup": "popup.html"
   },
