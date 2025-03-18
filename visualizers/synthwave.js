@@ -209,7 +209,7 @@ let visualizer = (function () {
     for (let h = 0; h < history.length; h++) {
       let historicalData = history[h].data;
       let z = history[h].z;
-      let maxIntensity = history[h].intensity;
+      let currentMaxIntensity = history[h].intensity;
 
       if (z < -0.1 || z > startZ) continue;
 
@@ -219,7 +219,8 @@ let visualizer = (function () {
       visualizerCtx.lineWidth = lineWidth;
 
       // Interpolate color based on intensity
-      let t = (maxIntensity - minIntensity) / (maxIntensity - minIntensity);
+      let t =
+        (currentMaxIntensity - minIntensity) / (maxIntensity - minIntensity);
       t = Math.max(0, Math.min(1, t));
       let interpolatedColor = lerpColor(
         lowIntensityColor,
