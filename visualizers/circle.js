@@ -1,4 +1,5 @@
-console.log("visualizer.js: Script loaded");
+console.log("circle.js: Script loaded");
+
 let visualizer = (function () {
   let visualizerCanvas;
   let backgroundCanvas;

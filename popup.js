@@ -1,8 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
   const captureButton = document.getElementById("captureButton");
+  const messageDiv = document.getElementById("message");
+  const visualizerSelect = document.getElementById("visualizerSelect");
+
+  // Load the last selected visualizer from storage
+  chrome.storage.local.get(["selectedVisualizer"], (result) => {
+    if (result.selectedVisualizer) {
+      visualizerSelect.value = result.selectedVisualizer;
+    }
+  });
 
   captureButton.addEventListener("click", () => {
-    // Get the currently active tab.
+    messageDiv.textContent = "Capturing...";
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs && tabs.length > 0) {
         const currentTab = tabs[0];
@@ -12,10 +21,10 @@ document.addEventListener("DOMContentLoaded", () => {
           currentTab.title
         );
 
-        // Store the tab ID and title.
+        // Store the tab ID and visualizer.
         chrome.storage.local.set({
           sourceTabId: currentTab.id,
-          sourceTabTitle: currentTab.title,
+          selectedVisualizer: visualizerSelect.value,
         });
 
         // Open the side panel for the captured tab.

@@ -25,35 +25,27 @@ function updateTabTitle() {
   }
 }
 
-chrome.storage.local.get(["sourceTabTitle", "sourceTabId"], (result) => {
+chrome.storage.local.get(["sourceTabId", "selectedVisualizer"], (result) => {
   console.log("sidepanel.js: Got data from storage:", result);
-  if (result.sourceTabTitle) {
-    document.getElementById("tabTitle").textContent = result.sourceTabTitle;
+
+  if (result.selectedVisualizer) {
+    const script = document.createElement("script");
+    script.src = `visualizers/${result.selectedVisualizer}.js`;
+    document.body.appendChild(script);
   }
+
   if (result.sourceTabId) {
     sourceTabId = result.sourceTabId;
     captureAudio(sourceTabId);
+    updateTabTitle();
     tabTitleUpdateInterval = setInterval(updateTabTitle, 1000);
   }
 });
 
 chrome.storage.local.onChanged.addListener((changes) => {
   console.log("sidepanel.js: storage.local.onChanged", changes);
-  if (changes.sourceTabTitle) {
-    document.getElementById("tabTitle").textContent =
-      changes.sourceTabTitle.newValue;
-  }
-  if (changes.sourceTabId) {
-    if (tabTitleUpdateInterval) {
-      clearInterval(tabTitleUpdateInterval);
-    }
-    sourceTabId = changes.sourceTabId.newValue;
-    if (sourceTabId) {
-      captureAudio(sourceTabId);
-      tabTitleUpdateInterval = setInterval(updateTabTitle, 1000);
-    } else {
-      document.getElementById("tabTitle").textContent = "";
-    }
+  if (changes.selectedVisualizer || changes.sourceTabId) {
+    window.location.reload();
   }
 });
 

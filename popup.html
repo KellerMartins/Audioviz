@@ -37,6 +37,7 @@
         outline: none; /* Remove default outline */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Button shadow */
         width: 100%; /* Full width button */
+        margin-bottom: 10px;
       }
 
       button:hover {
@@ -66,10 +67,33 @@
         font-size: 0.9em;
         color: #aaa; /* Slightly muted text color */
       }
+      #visualizerSelect {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-family: "Roboto Mono", monospace;
+        font-size: 0.9em;
+        appearance: none; /* Remove default arrow */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        cursor: pointer;
+      }
+      #visualizerSelect:hover {
+        background-color: #444;
+      }
     </style>
   </head>
   <body>
     <h3>Visualize Current Tab</h3>
+    <select id="visualizerSelect">
+      <option value="circle">Circle Visualizer</option>
+      <option value="synthwave">Synthwave Visualizer</option>
+      <option value="arctic">Arctic Visualizer</option>
+    </select>
     <button id="captureButton"><span>Capture Audio</span></button>
     <div id="message"></div>
     <script src="popup.js"></script>
