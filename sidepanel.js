@@ -1,6 +1,3 @@
-let isCapturing = false;
-let statusIndicator = null;
-
 console.log("sidepanel.js: Script loaded");
 
 function updateTabTitle(sourceTabId) {
@@ -15,7 +12,6 @@ function updateTabTitle(sourceTabId) {
 
     if (tab && tab.title) {
       document.getElementById("tabTitle").textContent = tab.title;
-      setTimout(() => updateTabTitle(sourceTabId), 1000);
     }
   });
 }
@@ -32,6 +28,7 @@ chrome.storage.local.get(["sourceTabId", "selectedVisualizer"], (result) => {
   if (result.sourceTabId) {
     captureAudio(result.sourceTabId);
     updateTabTitle(result.sourceTabId);
+    setInterval(() => updateTabTitle(result.sourceTabId), 1000);
   }
 });
 
@@ -67,6 +64,7 @@ function captureAudio(tabId) {
       dataHandler.handleStream(sourceStream); // Pass the stream to dataHandler
     } else {
       console.error("sidepanel.js: dataHandler is not ready");
+      statusIndicator.style.backgroundColor = "red";
     }
   });
 }
