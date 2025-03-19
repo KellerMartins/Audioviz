@@ -105,7 +105,7 @@ let visualizer = (function () {
     }
 
     mediaStreamSource.connect(analyser);
-    analyser.connect(audioContext.destination);
+    mediaStreamSource.connect(audioContext.destination);
 
     drawVisualizer();
   }
