@@ -5,7 +5,6 @@ let visualizer = (function () {
   let visualizerCtx;
   let backgroundCanvas;
   let backgroundCtx;
-  let animationId;
   let bufferLength;
   let dataArray;
   let analyser;
@@ -99,6 +98,8 @@ let visualizer = (function () {
     }
 
     mediaStreamSource.connect(analyser);
+    analyser.connect(audioContext.destination);
+
     drawVisualizer();
   }
 
@@ -107,7 +108,6 @@ let visualizer = (function () {
     const f = 1 / Math.tan((fov * Math.PI) / 180 / 2);
     const aspect = visualizerCanvas.width / visualizerCanvas.height;
     const zNear = 0.1;
-    const zFar = 100;
 
     const yRotated = y * Math.cos(pitchRotation) - z * Math.sin(pitchRotation);
     const zRotated = y * Math.sin(pitchRotation) + z * Math.cos(pitchRotation);
@@ -122,12 +122,11 @@ let visualizer = (function () {
   }
 
   function drawSun(intensity) {
-    const sunRadius = 30; // Adjust as needed
+    const sunRadius = 30;
     const sunCenterX = 0.5 * visualizerCanvas.width;
     const sunCenterY = 0.524 * visualizerCanvas.height;
-    // Draw radial lines (rays)
     const numRays = 40;
-    const rayLength = 10; // Adjust as needed
+    const rayLength = 10;
 
     visualizerCtx.lineWidth = 2;
 
@@ -155,7 +154,7 @@ let visualizer = (function () {
   }
 
   function drawVisualizer() {
-    animationId = requestAnimationFrame(drawVisualizer);
+    requestAnimationFrame(drawVisualizer);
 
     if (!dataArray) {
       if (analyser) {
@@ -270,7 +269,7 @@ let visualizer = (function () {
       visualizerCtx.stroke();
     }
 
-    // Draw vertical lines (with perspective)
+    // Draw vertical lines
     visualizerCtx.strokeStyle = "rgba(255, 255, 255, 0.1)";
 
     for (
@@ -283,7 +282,7 @@ let visualizer = (function () {
       let topPoint = project(x, 0, startZ);
 
       // Bottom point (closer, but with a fixed z)
-      let bottomPoint = project(x, 0, 0); // z=0 for the bottom
+      let bottomPoint = project(x, 0, 0);
 
       visualizerCtx.moveTo(topPoint.x, topPoint.y);
       visualizerCtx.lineTo(bottomPoint.x, bottomPoint.y);

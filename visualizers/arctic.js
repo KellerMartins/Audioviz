@@ -5,7 +5,6 @@ let visualizer = (function () {
   let visualizerCtx;
   let backgroundCanvas;
   let backgroundCtx;
-  let animationId;
   let bufferLength;
   let dataArray;
   let analyser;
@@ -13,8 +12,6 @@ let visualizer = (function () {
   let mediaStreamSource;
   let history = [];
   const historyLength = 135;
-  const horizonY = 0.2;
-  const vanishingPoint = { x: 0.5, y: horizonY };
   const zSpeed = -0.015;
 
   // Camera controls
@@ -52,6 +49,7 @@ let visualizer = (function () {
     backgroundCanvas.height = window.innerHeight;
 
     document.getElementById("tabTitle").style.color = "white";
+    document.body.style.cursor = "auto";
 
     let canvasContainer = document.getElementById("canvasContainer");
     canvasContainer.style.background =
@@ -107,6 +105,8 @@ let visualizer = (function () {
     }
 
     mediaStreamSource.connect(analyser);
+    analyser.connect(audioContext.destination);
+
     drawVisualizer();
   }
 
@@ -115,7 +115,6 @@ let visualizer = (function () {
     const f = 1 / Math.tan((fov * Math.PI) / 180 / 2);
     const aspect = visualizerCanvas.width / visualizerCanvas.height;
     const zNear = 0.1;
-    const zFar = 100;
 
     const yRotated = y * Math.cos(pitchRotation) - z * Math.sin(pitchRotation);
     const zRotated = y * Math.sin(pitchRotation) + z * Math.cos(pitchRotation);
@@ -130,7 +129,7 @@ let visualizer = (function () {
   }
 
   function drawVisualizer() {
-    animationId = requestAnimationFrame(drawVisualizer);
+    requestAnimationFrame(drawVisualizer);
 
     if (!dataArray) {
       if (analyser) {

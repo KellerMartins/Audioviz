@@ -5,11 +5,10 @@ let visualizer = (function () {
   let backgroundCanvas;
   let visualizerCtx;
   let backgroundCtx;
-  let animationId;
   let particles = [];
   let bufferLength;
   let dataArray;
-  let analyser; // Analyser is now here
+  let analyser;
   let audioContext;
   let mediaStreamSource;
 
@@ -76,9 +75,6 @@ let visualizer = (function () {
         dataArray = new Uint8Array(bufferLength);
       }
     });
-
-    // Don't start drawing until the media stream source is set
-    // drawVisualizer(); // Removed from here
   }
 
   function setMediaStreamSource(source, context) {
@@ -93,11 +89,13 @@ let visualizer = (function () {
     }
 
     mediaStreamSource.connect(analyser);
-    drawVisualizer(); // Start drawing *after* connecting the analyser
+    analyser.connect(audioContext.destination);
+
+    drawVisualizer();
   }
 
   function drawVisualizer() {
-    animationId = requestAnimationFrame(drawVisualizer);
+    requestAnimationFrame(drawVisualizer);
 
     if (!dataArray) {
       if (analyser) {
@@ -205,6 +203,6 @@ let visualizer = (function () {
   setupVisualizer();
 
   return {
-    setMediaStreamSource: setMediaStreamSource, // Expose this function
+    setMediaStreamSource: setMediaStreamSource,
   };
 })();

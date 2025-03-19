@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const messageDiv = document.getElementById("message");
   const visualizerSelect = document.getElementById("visualizerSelect");
 
-  // Load the last selected visualizer from storage
   chrome.storage.local.get(["selectedVisualizer"], (result) => {
     if (result.selectedVisualizer) {
       visualizerSelect.value = result.selectedVisualizer;
@@ -12,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   captureButton.addEventListener("click", () => {
     messageDiv.textContent = "Capturing...";
+
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs && tabs.length > 0) {
         const currentTab = tabs[0];

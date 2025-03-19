@@ -1,28 +1,23 @@
-let sourceTabId = null;
-let sourceStream = null;
-let mediaRecorder;
 let isCapturing = false;
 let statusIndicator = null;
-let tabTitleUpdateInterval = null;
 
 console.log("sidepanel.js: Script loaded");
 
-function updateTabTitle() {
-  if (sourceTabId) {
-    chrome.tabs.get(sourceTabId, (tab) => {
-      if (chrome.runtime.lastError) {
-        console.error(
-          "sidepanel.js: Error getting tab info:",
-          chrome.runtime.lastError
-        );
-        clearInterval(tabTitleUpdateInterval);
-        return;
-      }
-      if (tab && tab.title) {
-        document.getElementById("tabTitle").textContent = tab.title;
-      }
-    });
-  }
+function updateTabTitle(sourceTabId) {
+  chrome.tabs.get(sourceTabId, (tab) => {
+    if (chrome.runtime.lastError) {
+      console.error(
+        "sidepanel.js: Error getting tab info:",
+        chrome.runtime.lastError
+      );
+      return;
+    }
+
+    if (tab && tab.title) {
+      document.getElementById("tabTitle").textContent = tab.title;
+      setTimout(() => updateTabTitle(sourceTabId), 1000);
+    }
+  });
 }
 
 chrome.storage.local.get(["sourceTabId", "selectedVisualizer"], (result) => {
@@ -35,10 +30,8 @@ chrome.storage.local.get(["sourceTabId", "selectedVisualizer"], (result) => {
   }
 
   if (result.sourceTabId) {
-    sourceTabId = result.sourceTabId;
-    captureAudio(sourceTabId);
-    updateTabTitle();
-    tabTitleUpdateInterval = setInterval(updateTabTitle, 1000);
+    captureAudio(result.sourceTabId);
+    updateTabTitle(result.sourceTabId);
   }
 });
 
@@ -50,21 +43,9 @@ chrome.storage.local.onChanged.addListener((changes) => {
 });
 
 function captureAudio(tabId) {
-  if (sourceStream) {
-    sourceStream.getTracks().forEach((track) => track.stop());
-    if (dataHandler && dataHandler.cleanup) {
-      // Check if dataHandler exists
-      dataHandler.cleanup(); // Clean up MediaSource
-    }
-    if (mediaRecorder) {
-      mediaRecorder.stop();
-      isCapturing = false;
-      updateStatusIndicator();
-    }
-  }
-
   console.log("sidepanel.js: Capturing tab:", tabId);
-  chrome.tabCapture.capture({ audio: true, video: false }, (stream) => {
+
+  chrome.tabCapture.capture({ audio: true, video: false }, (sourceStream) => {
     if (chrome.runtime.lastError) {
       console.error(
         "sidepanel.js: Error capturing tab:",
@@ -73,42 +54,19 @@ function captureAudio(tabId) {
       statusIndicator.style.backgroundColor = "red";
       return;
     }
-    if (!stream) {
+
+    if (!sourceStream) {
       console.error("sidepanel.js: Stream is null after capture.");
       statusIndicator.style.backgroundColor = "red";
       return;
     }
 
-    sourceStream = stream;
     console.log("sidepanel.js: Tab captured, stream:", sourceStream);
 
     if (dataHandler && dataHandler.handleStream) {
       dataHandler.handleStream(sourceStream); // Pass the stream to dataHandler
     } else {
-      console.error("dataHandler is not ready");
+      console.error("sidepanel.js: dataHandler is not ready");
     }
-    stream.onended = () => {
-      console.log("sidepanel.js: Audio track ended");
-
-      if (mediaRecorder) {
-        mediaRecorder.stop();
-      }
-      isCapturing = false;
-      updateStatusIndicator();
-      if (dataHandler && dataHandler.cleanup) {
-        // Check if dataHandler exists
-        dataHandler.cleanup(); // Clean up MediaSource
-      }
-    };
   });
-}
-function updateStatusIndicator() {
-  if (!statusIndicator) {
-    statusIndicator = document.getElementById("statusIndicator");
-  }
-  if (isCapturing) {
-    statusIndicator.style.backgroundColor = "#00aaff";
-  } else {
-    statusIndicator.style.backgroundColor = "transparent";
-  }
 }
