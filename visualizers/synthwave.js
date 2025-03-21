@@ -24,6 +24,7 @@ let visualizer = (function () {
 
   const lowIntensityColor = { r: 155, g: 0, b: 255 };
   const highIntensityColor = { r: 0, g: 155, b: 255 };
+  const higherIntensityColor = { r: 0, g: 220, b: 255 };
 
   function lerp(a, b, t) {
     return a + (b - a) * t;
@@ -223,7 +224,7 @@ let visualizer = (function () {
       t = Math.max(0, Math.min(1, t));
       let interpolatedColor = lerpColor(
         lowIntensityColor,
-        highIntensityColor,
+        h === history.length - 1 ? higherIntensityColor : highIntensityColor,
         t
       );
       const coloro = `rgba(${interpolatedColor.r}, ${interpolatedColor.g}, ${interpolatedColor.b}, ${alpha})`;
