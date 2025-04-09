@@ -34,7 +34,7 @@ chrome.storage.local.get(["sourceTabId", "selectedVisualizer"], (result) => {
 
 chrome.storage.local.onChanged.addListener((changes) => {
   console.log("sidepanel.js: storage.local.onChanged", changes);
-  if (changes.selectedVisualizer || changes.sourceTabId) {
+  if (changes.selectedVisualizer || changes.sourceTabId || changes.reload) {
     window.location.reload();
   }
 });

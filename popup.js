@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         chrome.storage.local.set({
           sourceTabId: currentTab.id,
           selectedVisualizer: visualizerSelect.value,
+          reload: Date.now(),
         });
 
         // Open the side panel for the captured tab.
